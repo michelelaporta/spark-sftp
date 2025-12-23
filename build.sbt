@@ -56,6 +56,22 @@ Test / javaOptions += "--add-opens=java.base/sun.util.calendar=ALL-UNNAMED"
 
 
 
+// sbt-assembly: merge strategy to handle duplicate META-INF and native files when building a fat jar
+import sbtassembly.MergeStrategy
+import sbtassembly.PathList
+assembly / assemblyJarName := s"${name.value}-assembly-${version.value}.jar"
+assembly / assemblyMergeStrategy := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case "module-info.class" => MergeStrategy.discard
+  case "reference.conf" => MergeStrategy.concat
+  case "application.conf" => MergeStrategy.concat
+  case "META-INF/io.netty.versions.properties" => MergeStrategy.first
+  case "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat" => MergeStrategy.first
+  case x if x.endsWith(".class") && x.contains("com/google/thirdparty/publicsuffix") => MergeStrategy.first
+  case x if x.endsWith(".class") && x.contains("org/apache/commons/logging") => MergeStrategy.first
+  case _ => MergeStrategy.first
+}
+
 // licenses := Seq("Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0"))
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
