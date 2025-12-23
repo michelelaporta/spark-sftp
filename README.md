@@ -92,7 +92,23 @@ df.write.
             option("password", "****").
             option("fileType", "txt").
             load("config")
-            
+// Construct Spark dataframe using parquet file in FTP server (parquet example)
+ val parquetDf = spark.read.
+            format("com.springml.spark.sftp").
+            option("host", "SFTP_HOST").
+            option("username", "SFTP_USER").
+            option("password", "****").
+            option("fileType", "parquet").
+            load("/ftp/files/sample.parquet")
+
+// Write dataframe as parquet file to FTP server (parquet example)
+ df.write.
+     format("com.springml.spark.sftp").
+     option("host", "SFTP_HOST").
+     option("username", "SFTP_USER").
+     option("password", "****").
+     option("fileType", "parquet").
+     save("/ftp/files/sample.parquet")            
  // Construct spark dataframe using xml file in FTP server           
             val df = spark.read.
                  format("com.springml.spark.sftp").

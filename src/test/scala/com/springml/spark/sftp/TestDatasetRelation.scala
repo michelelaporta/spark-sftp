@@ -57,6 +57,23 @@ class TestDatasetRelation extends AnyFunSuite with BeforeAndAfterEach {
     assert(2 == rdd.count())
   }
 
+  test ("Write and Read Parquet") {
+    val spark = ss
+    import spark.implicits._
+    // create a small dataframe and write it out as parquet
+    val df = Seq((1, "Alice"), (2, "Bob")).toDF("id", "name")
+    val tempDir = java.nio.file.Files.createTempDirectory("parquet_roundtrip").toFile.getAbsolutePath
+    val outPath = tempDir + "/out"
+    df.coalesce(1).write.parquet(outPath)
+
+    // read it back using DatasetRelation and assert content
+    val dsr = DatasetRelation(outPath, "parquet", "false", "true", ",", "\"", "\\", "false", null, null, ss.sqlContext)
+    val rdd = dsr.buildScan()
+    assert(2 == rdd.count())
+    val names = rdd.map(_.getString(1)).collect().toSet
+    assert(names == Set("Alice", "Bob"))
+  }
+
   test ("Read text file") {
     val fileLocation = getClass.getResource("/plaintext.txt").getPath
     val dsr = DatasetRelation(fileLocation, "txt", "false", "true", ",", "\"", "\\", "false", null, null, ss.sqlContext)
