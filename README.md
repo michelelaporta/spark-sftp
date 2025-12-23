@@ -4,7 +4,7 @@ A library for constructing dataframes by downloading files from SFTP and writing
 
 ## Requirements
 
-This library requires Spark 2.x.
+This library requires Spark 4.x.
 
 For Spark 1.x support, please check [spark1.x](https://github.com/springml/spark-sftp/tree/spark1.x) branch.
 
@@ -15,15 +15,15 @@ You can link against this library in your program at the following ways:
 ```
 <dependency>
 	<groupId>com.springml</groupId>
-	<artifactId>spark-sftp_2.11</artifactId>
-	<version>1.1.3</version>
+      <artifactId>spark-sftp_2.13</artifactId>
+      <version>1.3.0</version>
 </dependency>
 
 ```
 
 ### SBT Dependency
 ```
-libraryDependencies += "com.springml" % "spark-sftp_2.11" % "1.1.3"
+libraryDependencies += "com.springml" % "spark-sftp_2.13" % "1.3.0"
 ```
 
 
@@ -31,7 +31,7 @@ libraryDependencies += "com.springml" % "spark-sftp_2.11" % "1.1.3"
 This package can be added to Spark using the `--packages` command line option.  For example, to include it when starting the spark shell:
 
 ```
-$ bin/spark-shell --packages com.springml:spark-sftp_2.11:1.1.3
+$ bin/spark-shell --packages com.springml:spark-sftp_2.13:1.3.0
 ```
 
 ## Features

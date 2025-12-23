@@ -1,6 +1,5 @@
-lazy val scala211Version = "2.11.12"
-lazy val scala212Version = "2.12.10"
-lazy val sparkVersion = "3.1.1"
+lazy val scala213Version = "2.13.12"
+lazy val sparkVersion = "4.0.1"
 
 
 
@@ -8,8 +7,8 @@ lazy val commonSettings = Seq(
   name := "spark-sftp",
   organization := "com.springml",
   version := "1.3.0",
-  scalaVersion := scala212Version,
-  crossScalaVersions := Seq(scala211Version, scala212Version)
+  scalaVersion := scala213Version,
+  crossScalaVersions := Seq(scala213Version)
 )
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
@@ -17,8 +16,8 @@ javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 initialize := {
   val _ = initialize.value
   val javaVersion = sys.props("java.specification.version")
-  if (javaVersion != "1.8")
-    sys.error("Java 1.8 is required for this project. Found " + javaVersion + " instead")
+  //if (javaVersion != "1.8")
+  //  sys.error("Java 1.8 is required for this project. Found " + javaVersion + " instead")
 }
 
 
@@ -27,7 +26,7 @@ lazy val shaded = (project in file("."))
 
 // Test dependencies
 lazy val commonTestDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "org.scalatest" %% "scalatest" % "3.2.19" % "test",
   "org.apache.avro" % "avro-mapred" % "1.7.7" % "test" exclude("org.mortbay.jetty", "servlet-api"),
   "org.apache.spark" %% "spark-hive" % sparkVersion % "test"
 )
@@ -40,13 +39,17 @@ libraryDependencies ++= (commonTestDependencies ++ Seq(
   //spark -dependents
   "org.apache.spark" %% "spark-avro" % sparkVersion,
   "com.springml" % "sftp.client" % "1.0.3",
-  "org.mockito" % "mockito-core" % "2.0.31-beta",
-  "com.databricks" %% "spark-xml" % "0.5.0"
+  "org.mockito" % "mockito-core" % "2.0.31-beta"
+  //,"com.databricks" %% "spark-xml" % "0.5.0"
 ))
 
 
 // Repositories
 resolvers += "Spark Package Main Repo" at "https://dl.bintray.com/spark-packages/maven"
+
+// Ensure tests run with Java module opens required by Spark on newer JDKs
+Test / fork := true
+Test / javaOptions += "--add-opens=java.base/sun.util.calendar=ALL-UNNAMED"
 
 
 

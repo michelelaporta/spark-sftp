@@ -130,7 +130,7 @@ class DefaultSource extends RelationProvider with SchemaRelationProvider with Cr
     val tempFile = writeToTemp(sqlContext, data, hdfsTemp, tmpFolder, fileType, header, delimiter, quote, escape, multiLine, codec, rowTag, rootTag)
 
     upload(tempFile, path, sftpClient)
-    return createReturnRelation(data)
+    return createReturnRelation(data.sparkSession.sqlContext, data.schema)
   }
   private def copyToHdfs(sqlContext: SQLContext, fileLocation : String,
                          hdfsTemp : String): String  = {
@@ -195,7 +195,7 @@ class DefaultSource extends RelationProvider with SchemaRelationProvider with Cr
   }
 
   private def createReturnRelation(data: DataFrame): BaseRelation = {
-    createReturnRelation(data.sqlContext, data.schema)
+    createReturnRelation(data.sparkSession.sqlContext, data.schema)
   }
 
   private def createReturnRelation(sqlContextVar: SQLContext, schemaVar: StructType): BaseRelation = {
